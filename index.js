@@ -6,6 +6,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+app.use(express.static(path.join(__dirname, "static")))
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "html", "index.html"))
 })
@@ -16,5 +18,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3000, () => {
-    console.log('Server is running on port 3000');
+    console.log('http://localhost:3000');
 });
