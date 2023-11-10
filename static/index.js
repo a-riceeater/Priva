@@ -1,11 +1,12 @@
 const socket = io();
 
-var encryption, room, name;
+var encryption, room, name, roomReg;
 
 document.querySelector(".connect-btn").addEventListener("click", (e) => {
     encryption = document.querySelector("#encrypt").value
     //let id = CryptoJS.AES.encrypt(, encryption || "blank").toString();
     let id = String(CryptoJS.MD5(document.querySelector("#roomID").value.trim()))
+    roomReg = document.querySelector("#roomID").value.trim();
     let name = document.querySelector("#uName").value.trim();
 
     room = id
@@ -37,4 +38,7 @@ socket.on("join", (name) => {
 
     const lmsg = document.createElement("p")
     lmsg.innerHTML = name + " joined the room..."
+    
+    document.title = "Priva - " + room;
+    document.querySelector("#room").innerHTML = `${room} (${roomReg})`
 })
