@@ -30,7 +30,15 @@ io.on('connection', (socket) => {
     })
 
     socket.on("disconnect", () => {
-        if (!users[rooms[socket.id] || !rooms[socket.id]]) return
+        if (!users[rooms[socket.id]] || !rooms[socket.id]) return
+
+        const urs = users[rooms[socket.id]]
+        for (let i = 0; i < urs.length; i++) {
+            if (urs[i].id == socket.id) {
+                users[rooms[socket.id]].splice(i, 1)
+            }
+        }
+
         delete rooms[socket.id]
     })
 
