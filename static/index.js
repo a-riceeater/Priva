@@ -37,7 +37,7 @@ socket.on("connect_success", (users) => {
 
     setInterval(() => {
         socket.emit("ping", new Date().getTime())
-    }, 500)
+    }, 800)
 })
 
 socket.on("join", (n) => {
