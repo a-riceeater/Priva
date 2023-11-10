@@ -13,7 +13,18 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "html", "index.html"))
 })
 
+const rooms = {};
+
 io.on('connection', (socket) => {
+    socket.on("join-room", (data) => {
+        socket.join(data.id)
+        rooms[socket.id] = data.id;
+
+        setTimeout(() => {
+            socket.emit("connect_success")
+            io.to(data.id).emit("join", data.name);
+        }, 1000)
+    })
 });
 
 server.listen(5000, () => {
