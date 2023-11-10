@@ -23,8 +23,17 @@ document.querySelector(".connect-btn").addEventListener("click", (e) => {
 
 socket.on("connect_success", () => {
     document.querySelector(".connect").remove()
+    document.querySelector(".voice").style.display = "flex"
+    document.querySelector(".log").style.display = "block"
 })
 
-socket.on("join", (data) => {
+socket.on("join", (name) => {
+    const upvb = document.createElement("div")
+    upvb.innerHTML = name;
+    upvb.classList.add("up-vb")
 
+    document.querySelector(".voice").appendChild(upvb);
+
+    const lmsg = document.createElement("p")
+    lmsg.innerHTML = name + " joined the room..."
 })
