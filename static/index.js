@@ -34,6 +34,10 @@ socket.on("connect_success", (users) => {
         ele.classList.add("up-vb")
         document.querySelector(".voice").appendChild(ele)
     }
+
+    setInterval(() => {
+        socket.emit("ping", new Date().getTime())
+    }, 500)
 })
 
 socket.on("join", (n) => {
@@ -53,9 +57,5 @@ socket.on("join", (n) => {
 
 socket.on("pong", (d1) => {
     const date = new Date().getTime()
-    console.log(date - d1)
+    document.querySelector("#ping").innerHTML = `Latency: ${date - d1}ms`
 })
-
-setInterval(() => {
-    socket.emit("ping", new Date().getTime())
-}, 500)
