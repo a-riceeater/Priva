@@ -14,7 +14,6 @@ app.get("/", (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('A user connected');
-    // Handle audio streaming logic here
 });
 
 server.listen(3000, () => {
