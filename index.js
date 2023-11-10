@@ -14,18 +14,31 @@ app.get("/", (req, res) => {
 })
 
 const rooms = {};
+const users = {}
 
 io.on('connection', (socket) => {
     socket.on("join-room", (data) => {
         socket.join(data.id)
         rooms[socket.id] = data.id;
+        if (!users[data.id]) users[data.id] = []
 
         setTimeout(() => {
-            socket.emit("connect_success")
+            socket.emit("connect_success", users[data.id])
             io.to(data.id).emit("join", data.name);
+            users[data.id].push({ name: data.name, id: socket.id })
         }, 1000)
     })
+
+    socket.on("disconnect", () => {
+        if (!users[rooms[socket.id] || !rooms[socket.id]]) return
+        delete rooms[socket.id]
+    })
+
+    socket.on("ping", (date) => {
+        socket.emit("pong", date)
+    })
 });
+
 
 server.listen(5000, () => {
     console.log('http://localhost:5000');

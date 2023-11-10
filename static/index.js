@@ -1,6 +1,6 @@
 const socket = io();
 
-var encryption, room, name, roomReg;
+var encryption, room, uname, roomReg;
 
 document.querySelector(".connect-btn").addEventListener("click", (e) => {
     encryption = document.querySelector("#encrypt").value
@@ -10,7 +10,7 @@ document.querySelector(".connect-btn").addEventListener("click", (e) => {
     let name = document.querySelector("#uName").value.trim();
 
     room = id
-    name = name
+    uname = name
 
     if (!id || !name || !encryption) return
 
@@ -23,22 +23,39 @@ document.querySelector(".connect-btn").addEventListener("click", (e) => {
     document.querySelector(".connect").innerHTML = "<h1 style='animation: bounce 1s infinite ease-in; cursor: default !important; user-select: none;'>CONNECTING...</h1>"
 })
 
-socket.on("connect_success", () => {
+socket.on("connect_success", (users) => {
     document.querySelector(".connect").remove()
     document.querySelector(".voice").style.display = "flex"
     document.querySelector(".log").style.display = "block"
+
+    for (let i = 0; i < users.length; i++) {
+        const ele = document.createElement("div")
+        ele.innerHTML = users[i].name
+        ele.classList.add("up-vb")
+        document.querySelector(".voice").appendChild(ele)
+    }
 })
 
-socket.on("join", (name) => {
+socket.on("join", (n) => {
     const upvb = document.createElement("div")
-    upvb.innerHTML = name;
+    upvb.innerHTML = n;
     upvb.classList.add("up-vb")
 
     document.querySelector(".voice").appendChild(upvb);
 
     const lmsg = document.createElement("p")
-    lmsg.innerHTML = name + " joined the room..."
+    lmsg.innerHTML = n + " joined the room..."
+    document.querySelector(".log").appendChild(lmsg);
     
     document.title = "Priva - " + room;
-    document.querySelector("#room").innerHTML = `${room} (${roomReg})`
+    document.querySelector("#room").innerHTML = `${room} (${roomReg}) - ${uname} (you)`
 })
+
+socket.on("pong", (d1) => {
+    const date = new Date().getTime()
+    console.log(date - d1)
+})
+
+setInterval(() => {
+    socket.emit("ping", new Date().getTime())
+}, 500)
