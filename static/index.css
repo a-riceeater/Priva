@@ -1,0 +1,33 @@
+.connect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.connect > input {
+    margin-bottom: 10px;
+    width: 300px;
+    height: 35px;
+    padding-left: 5px;
+    box-sizing: border-box;
+    outline: 0;
+}
+
+.connect > button {
+    width: 200px;
+    height: 40px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 16.5px;
+    background-color: #e9967a;
+    border: 1px solid #e9967a;
+    border-radius: 2px / 2px;
+}
+
+body {
+    background-color: rgb(1, 2, 21);
+}
