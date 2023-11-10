@@ -57,5 +57,5 @@ socket.on("join", (n) => {
 
 socket.on("pong", (d1) => {
     const date = new Date().getTime()
-    document.querySelector("#ping").innerHTML = `Latency: ${date - d1}ms`
+    document.querySelector("#ping").innerHTML = `Latency: ${(date - d1).toFixed()}ms`
 })
