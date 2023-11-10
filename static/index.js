@@ -3,10 +3,11 @@ const socket = io();
 var encryption, room, name;
 
 document.querySelector(".connect-btn").addEventListener("click", (e) => {
-    let id = document.querySelector("#roomID").value.trim();
+    encryption = document.querySelector("#encrypt").value
+    //let id = CryptoJS.AES.encrypt(, encryption || "blank").toString();
+    let id = String(CryptoJS.MD5(document.querySelector("#roomID").value.trim()))
     let name = document.querySelector("#uName").value.trim();
 
-    encryption = document.querySelector("#encrypt").value
     room = id
     name = name
 
