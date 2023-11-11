@@ -42,6 +42,7 @@ socket.on("connect_success", (users) => {
         const ele = document.createElement("div")
         ele.innerHTML = users[i].name
         ele.classList.add("up-vb")
+        ele.id = `user-${users[i].name}`
         document.querySelector(".voice").appendChild(ele)
     }
 
