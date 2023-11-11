@@ -35,6 +35,50 @@ socket.on("connect_success", (users) => {
         document.querySelector(".voice").appendChild(ele)
     }
 
+    (() => {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+            var madiaRecorder = new MediaRecorder(stream);
+            madiaRecorder.start();
+
+            var audioChunks = [];
+
+            madiaRecorder.addEventListener("dataavailable", function (event) {
+                audioChunks.push(event.data);
+            });
+
+            madiaRecorder.addEventListener("stop", function () {
+                var audioBlob = new Blob(audioChunks);
+
+                audioChunks = [];
+
+                var fileReader = new FileReader();
+                fileReader.readAsDataURL(audioBlob);
+                fileReader.onloadend = function () {
+                    //if (userStatus.muted) return;
+
+                    var base64 = fileReader.result;
+                    base64 = base64.split(";");
+                    base64[0] = "data:audio/ogg;";
+                    base64 = base64[0] + base64[1];
+                    socket.emit("audio-stream", base64);
+
+                };
+
+                madiaRecorder.start();
+
+
+                setTimeout(function () {
+                    madiaRecorder.stop();
+                }, 500);
+            });
+
+            setTimeout(function () {
+                madiaRecorder.stop();
+            }, 500);
+        });
+
+    })();
+
     setInterval(() => {
         socket.emit("ping", new Date().getTime())
     }, 800)
@@ -50,7 +94,7 @@ socket.on("join", (n) => {
     const lmsg = document.createElement("p")
     lmsg.innerHTML = n + " joined the room..."
     document.querySelector(".log").appendChild(lmsg);
-    
+
     document.title = "Priva - " + room;
     document.querySelector("#room").innerHTML = `${room} (${roomReg}) - ${uname} (you)`
 })
@@ -59,3 +103,9 @@ socket.on("pong", (d1) => {
     const date = new Date().getTime()
     document.querySelector("#ping").innerHTML = `Latency: ${(date - d1).toFixed()}ms`
 })
+
+socket.on('audio-stream', (stream) => {
+    console.dir(stream)
+    const audio = new Audio(stream);
+    audio.play();
+});

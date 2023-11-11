@@ -88,3 +88,14 @@ body {
     color: lightblue;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.controls {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    text-align: right;
+}
+
+.controls > p {
+    cursor: pointer;
+}
