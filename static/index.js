@@ -119,6 +119,7 @@ socket.on("pong", (d1) => {
 })
 
 socket.on('audio-stream', (stream, user) => {
+    if (user == uname) return
     supd("Recieving Packet...", 200)
     if (userStatus.deaf) return
     supd("Decrypting Packet...", 400)
