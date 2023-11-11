@@ -48,6 +48,7 @@ body {
     padding-left: 25px;
     box-sizing: border-box;
     display: none;
+    overflow-y: scroll;
 }
 
 .voice {

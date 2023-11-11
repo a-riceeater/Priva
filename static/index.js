@@ -6,10 +6,11 @@ const userStatus = {
     deaf: false
 }
 
-const supd = (m, w) => { 
+const supd = (m, w) => {
     setTimeout(() => {
         document.querySelector(".vstatus").innerHTML = m
-    }, w)}
+    }, w)
+}
 
 document.querySelector(".connect-btn").addEventListener("click", (e) => {
     encryption = document.querySelector("#encrypt").value
@@ -100,6 +101,7 @@ socket.on("join", (n) => {
     const upvb = document.createElement("div")
     upvb.innerHTML = n;
     upvb.classList.add("up-vb")
+    upvb.id = `user-${n}`
 
     document.querySelector(".voice").appendChild(upvb);
 
@@ -117,13 +119,23 @@ socket.on("pong", (d1) => {
 })
 
 socket.on('audio-stream', (stream, user) => {
-    console.dir(stream)
     supd("Recieving Packet...", 200)
     if (userStatus.deaf) return
     supd("Decrypting Packet...", 400)
-    var ns = CryptoJS.AES.decrypt(stream, encryption).toString(CryptoJS.enc.Utf8)
-    const audio = new Audio(ns);
-    audio.play();
+    try {
+        var ns = CryptoJS.AES.decrypt(stream, encryption).toString(CryptoJS.enc.Utf8)
+        const audio = new Audio(ns);
+        audio.play();
+        document.querySelector(`#user-${user}`).style.border = "1px solid orange"
+        setTimeout(() => document.querySelector(`#user-${user}`).style.border = "1px solid lightblue", 500)
+    } catch (err) {
+        console.error(err)
+        const er = document.createElement("p")
+        er.innerHTML = "DECRYPTION FAILURE (FROM " + user + ")"
+        er.style.color = "red"
+        document.querySelector(".log").appendChild(er);
+        setTimeout(() => document.querySelector(".log").scrollTop = document.querySelector(".log").scrollHeight)
+    }
 });
 
 document.querySelector("#mute").addEventListener("click", (e) => {
