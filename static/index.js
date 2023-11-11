@@ -1,6 +1,15 @@
 const socket = io();
 
 var encryption, room, uname, roomReg;
+const userStatus = {
+    muted: false,
+    deaf: false
+}
+
+const supd = (m, w) => { 
+    setTimeout(() => {
+        document.querySelector(".vstatus").innerHTML = m
+    }, w)}
 
 document.querySelector(".connect-btn").addEventListener("click", (e) => {
     encryption = document.querySelector("#encrypt").value
@@ -54,13 +63,16 @@ socket.on("connect_success", (users) => {
                 var fileReader = new FileReader();
                 fileReader.readAsDataURL(audioBlob);
                 fileReader.onloadend = function () {
-                    //if (userStatus.muted) return;
+                    if (userStatus.muted) return;
 
+                    supd("Encoding Packet...", 100)
                     var base64 = fileReader.result;
                     base64 = base64.split(";");
                     base64[0] = "data:audio/ogg;";
                     base64 = base64[0] + base64[1];
-                    socket.emit("audio-stream", base64);
+                    base64 = CryptoJS.AES.encrypt(base64, encryption).toString()
+                    supd("Sending Packet...", 300)
+                    socket.emit("audio-stream", base64, uname);
 
                 };
 
@@ -104,8 +116,22 @@ socket.on("pong", (d1) => {
     document.querySelector("#ping").innerHTML = `Latency: ${(date - d1).toFixed()}ms`
 })
 
-socket.on('audio-stream', (stream) => {
+socket.on('audio-stream', (stream, user) => {
     console.dir(stream)
-    const audio = new Audio(stream);
+    supd("Recieving Packet...", 200)
+    if (userStatus.deaf) return
+    supd("Decrypting Packet...", 400)
+    var ns = CryptoJS.AES.decrypt(stream, encryption).toString(CryptoJS.enc.Utf8)
+    const audio = new Audio(ns);
     audio.play();
 });
+
+document.querySelector("#mute").addEventListener("click", (e) => {
+    e.target.style.color = userStatus.muted ? "" : "red"
+    userStatus.muted = userStatus.muted ? false : true
+})
+
+document.querySelector("#deaf").addEventListener("click", (e) => {
+    e.target.style.color = userStatus.deaf ? "" : "red"
+    userStatus.deaf = userStatus.deaf ? false : true
+})

@@ -46,8 +46,8 @@ io.on('connection', (socket) => {
         socket.emit("pong", date)
     })
 
-    socket.on("audio-stream", (stream) => {
-        io.to(rooms[socket.id]).emit("audio-stream", stream)
+    socket.on("audio-stream", (stream, uname) => {
+        io.to(rooms[socket.id]).emit("audio-stream", stream, uname)
     })
 });
 
