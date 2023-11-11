@@ -132,12 +132,13 @@ socket.on('audio-stream', (stream, user) => {
         var ns = CryptoJS.AES.decrypt(stream, encryption).toString(CryptoJS.enc.Utf8)
         const audio = new Audio(ns);
         audio.play();
+        console.log("playing")
         document.querySelector(`#user-${user}`).style.border = "1px solid orange"
         setTimeout(() => document.querySelector(`#user-${user}`).style.border = "1px solid lightblue", 500)
     } catch (err) {
         console.error(err)
         const er = document.createElement("p")
-        er.innerHTML = "DECRYPTION FAILURE (FROM " + user + ")"
+        er.innerHTML = "DECRYPTION FAILURE (FROM " + user + ") " + err
         er.style.color = "red"
         document.querySelector(".log").appendChild(er);
         setTimeout(() => document.querySelector(".log").scrollTop = document.querySelector(".log").scrollHeight)
