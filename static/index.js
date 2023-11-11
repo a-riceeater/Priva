@@ -119,7 +119,11 @@ socket.on("pong", (d1) => {
 })
 
 socket.on('audio-stream', (stream, user) => {
-    if (user == uname) return
+    if (user == uname) {
+        document.querySelector(`#user-${user}`).style.border = "1px solid orange"
+        setTimeout(() => document.querySelector(`#user-${user}`).style.border = "1px solid lightblue", 500)
+        return
+    }
     supd("Recieving Packet...", 200)
     if (userStatus.deaf) return
     supd("Decrypting Packet...", 400)
